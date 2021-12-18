@@ -28,7 +28,8 @@ model = E2E()
 
 # recognize license plate
 image = model.predict(img)
-
+license_plate = model.format()
+print(license_plate) #hien ra bien so xe
 # end
 end = time.time()
 
