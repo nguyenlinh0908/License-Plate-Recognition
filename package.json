@@ -1,0 +1,24 @@
+{
+  "name": "license-plate-recognition",
+  "version": "1.0.0",
+  "description": "Phương pháp mình giới thiệu lần này bao gồm 4 bước: <br>",
+  "main": "index.js",
+  "scripts": {
+    "electron": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nguyenlinh0908/License-Plate-Recognition.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nguyenlinh0908/License-Plate-Recognition/issues"
+  },
+  "homepage": "https://github.com/nguyenlinh0908/License-Plate-Recognition#readme",
+  "dependencies": {
+    "electron": "^16.0.5",
+    "python-shell": "^3.0.1"
+  }
+}
