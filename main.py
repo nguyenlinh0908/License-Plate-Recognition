@@ -35,9 +35,10 @@ def main():
     end = time.time()
 
     #print('Model process on %.2f s' % (end - start))
-    # retval, buffer = cv2.imencode('.jpg', image)
-    # jpg_as_text = base64.b64encode(image)
-    print(image)
+    retval, buffer = cv2.imencode('.jpg', image)
+    jpg_as_text = base64.b64encode(buffer)
+  #  cv2.imwrite('testfile.jpg', image)
+    print(jpg_as_text)
     # show image
     # cv2.imshow('License Plate', image)
     # if cv2.waitKey(0) & 0xFF == ord('q'):
