@@ -19,6 +19,8 @@
   "homepage": "https://github.com/nguyenlinh0908/License-Plate-Recognition#readme",
   "dependencies": {
     "electron": "^16.0.5",
+    "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "python-shell": "^3.0.1"
   }
 }
