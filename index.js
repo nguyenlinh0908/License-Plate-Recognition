@@ -19,7 +19,9 @@ ipcMain.on("image:submit", (e, path) => {
   const imageBase64 = base64_encode(path);
   execWithPython(imageBase64);
 });
-
+ipcMain.on("qr:submit", (e, myPath)=>{
+  const imageBase64 = base64_encode(myPath);
+})
 function base64_encode(file) {
   // read binary data
   var bitmap = fs.readFileSync(file);
@@ -32,6 +34,11 @@ function storageTicket(path, data) {
   let tickets = JSON.parse(rawFile);
   const d = new Date();
   let time = d.getTime();
+  let year = d.getFullYear();
+  let month = d.getMonth() + 1;
+  month < 10 ? (month = "0" + month) : (month = month);
+  let day = d.getDay();
+  day < 10 ? (day = "0" + day) : (day = day);
   if (tickets.length > 0 && _.find(tickets, { license_plate: txt })) {
     // const info = _.find(tickets, { license_plate: txt });
     // if (info["status"] == "false") {
@@ -42,7 +49,8 @@ function storageTicket(path, data) {
       id: time.toString(),
       license_plate: txt,
       ticket: ticket_url_sys,
-      status: "false",
+      time: `${day}/${month}/${year}`,
+      status: false,
     };
     tickets.push(ticket);
     let ticketsJson = JSON.stringify(tickets);

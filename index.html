@@ -32,18 +32,6 @@
             <li class="nav-item">
               <a
                 class="nav-link"
-                id="profile-tab"
-                data-toggle="tab"
-                href="#profile"
-                role="tab"
-                aria-controls="profile"
-                aria-selected="false"
-                >Scan Qr</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
                 id="contact-tab"
                 data-toggle="tab"
                 href="#contact"
@@ -126,51 +114,61 @@
           </div>
           <div
             class="tab-pane fade"
-            id="profile"
-            role="tabpanel"
-            aria-labelledby="profile-tab"
-          >
-            <div id="qrBox" class="row p-3 main_border module">
-              <div class="col"><p>Scan Qr</p></div>
-            </div>
-          </div>
-          <div
-            class="tab-pane fade"
             id="contact"
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
+            <div id="QrBox" class="row p-3 main_border module">
+              <div class="col-4">
+                <div class="align-self-center pb-3" id="qr_box">
+                  <img
+                    class="w-100 image_box"
+                    id="qr_origin"
+                    src=""
+                    alt="Qr image"
+                  />
+                </div>
+                <form id="qrForm" action="#">
+                  <input
+                    id="qrinput"
+                    type="file"
+                    accept="image/*"
+                    style="display: none"
+                    onchange="qrOrigin(event)"
+                  />
+                  <button class="btn btn-primary w-100" type="submit">
+                    Identification
+                  </button>
+                </form>
+              </div>
+              <div class="col-8">
+                <div class="row p-3">
+                  <div class="col">
+                    <h3 class="text-center">Information</h3>
+                    <label for="licensePlateText">License Plate:</label>
+                    <h4
+                      id="licensePlateText"
+                      class="text-center text-uppercaseclear"
+                    ></h4>
+                    <label for="ticketImage">Status</label>
+                  </div>
+                  <div class="col-2"></div>
+                </div>
+              </div>
+            </div>
             <div id="managerBox" class="row p-3 main_border module">
               <div class="col">
-                <table class="table">
-                  <thead>
+                <table class="table" id="ticket_table">
+                  <thead class="thead-dark">
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
+                      <th scope="col">Qr</th>
+                      <th scope="col">License plate</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Status</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                  </tbody>
+                  <tbody></tbody>
                 </table>
               </div>
             </div>
