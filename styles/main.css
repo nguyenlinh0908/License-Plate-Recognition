@@ -21,3 +21,6 @@
   height: 30vh;
   max-height: 40vh;
 }
+#ticket_table img {
+  max-width: 255px;
+}

@@ -62,6 +62,7 @@
                       id="licensePlate_origin"
                       src=""
                       alt="license plate origin"
+                      style="background-color: gray"
                     />
                   </div>
                   <div class="col-2"></div>
@@ -71,6 +72,7 @@
                       id="licensePlate_identified"
                       src=""
                       alt="license plate identified"
+                      style="background-color: gray"
                     />
                   </div>
                 </div>
@@ -101,7 +103,13 @@
                       class="text-center text-uppercaseclear"
                     ></h4>
                     <label for="ticketImage">Ticket</label>
-                    <img src="" id="ticketImage" class="w-100" alt="" />
+                    <img
+                      src=""
+                      id="ticketImage"
+                      class="w-100"
+                      alt=""
+                      style="background-color: gray"
+                    />
                   </div>
                   <div class="col-2">
                     <p id="warning_ticket" class="text-danger">
@@ -118,14 +126,19 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <div id="QrBox" class="row p-3 main_border module">
+            <div id="QrBox" class="row m-3 main_border module">
               <div class="col-4">
-                <div class="align-self-center pb-3" id="qr_box">
+                <div
+                  id="qr_box"
+                  class="text-center"
+                  style="width: 100%; min-height: 20vh; background-color: gray"
+                >
                   <img
-                    class="w-100 image_box"
+                    class="w-50 image_box"
                     id="qr_origin"
                     src=""
                     alt="Qr image"
+                    style="background-color: gray"
                   />
                 </div>
                 <form id="qrForm" action="#">
@@ -136,7 +149,7 @@
                     style="display: none"
                     onchange="qrOrigin(event)"
                   />
-                  <button class="btn btn-primary w-100" type="submit">
+                  <button class="btn btn-primary w-100 mt-3" type="submit">
                     Identification
                   </button>
                 </form>
@@ -147,16 +160,17 @@
                     <h3 class="text-center">Information</h3>
                     <label for="licensePlateText">License Plate:</label>
                     <h4
-                      id="licensePlateText"
+                      id="licensePlateTextTicket"
                       class="text-center text-uppercaseclear"
                     ></h4>
-                    <label for="ticketImage">Status</label>
+                    <label for="timeTextTicket">Time</label>
+                    <h5 class="text-center" id="timeTextTicket"></h5>
                   </div>
                   <div class="col-2"></div>
                 </div>
               </div>
             </div>
-            <div id="managerBox" class="row p-3 main_border module">
+            <div id="managerBox" class="row m-3 main_border module">
               <div class="col">
                 <table class="table" id="ticket_table">
                   <thead class="thead-dark">

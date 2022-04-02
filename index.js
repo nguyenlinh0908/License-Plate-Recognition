@@ -19,9 +19,28 @@ ipcMain.on("image:submit", (e, path) => {
   const imageBase64 = base64_encode(path);
   execWithPython(imageBase64);
 });
-ipcMain.on("qr:submit", (e, myPath)=>{
-  const imageBase64 = base64_encode(myPath);
-})
+ipcMain.on("qr:submit", (e, myPath) => {
+  execWithPythonQrCode(myPath);
+});
+function execWithPythonQrCode(pathTicket) {
+  let myPyShell = new PythonShell("main.py");
+  // sends a message to the Python script via stdin
+  myPyShell.send(JSON.stringify({ data: pathTicket, process: 1 })); //ticket recognition
+
+  myPyShell.on("message", function (message) {
+    const dataResult = JSON.parse(message);
+    // received a message sent from the Python script (a simple "print" statement)
+    mainWindow.webContents.send("qr:result", dataResult);
+  });
+
+  // end the input stream and allow the process to exit
+  myPyShell.end(function (err, code, signal) {
+    if (err) throw err;
+    console.log("The exit code was: " + code);
+    console.log("The exit signal was: " + signal);
+    console.log("finished");
+  });
+}
 function base64_encode(file) {
   // read binary data
   var bitmap = fs.readFileSync(file);
@@ -37,7 +56,7 @@ function storageTicket(path, data) {
   let year = d.getFullYear();
   let month = d.getMonth() + 1;
   month < 10 ? (month = "0" + month) : (month = month);
-  let day = d.getDay();
+  let day = d.getDate();
   day < 10 ? (day = "0" + day) : (day = day);
   if (tickets.length > 0 && _.find(tickets, { license_plate: txt })) {
     // const info = _.find(tickets, { license_plate: txt });
@@ -69,7 +88,9 @@ function execWithPython(imageBase64) {
   let myPyShell = new PythonShell("main.py");
 
   // sends a message to the Python script via stdin
-  myPyShell.send(JSON.stringify(imageBase64));
+  myPyShell.send(
+    JSON.stringify({ data: imageBase64, process: 0 }) // process 0 is license plate recognition
+  );
 
   myPyShell.on("message", function (message) {
     const dataResult = JSON.parse(message);

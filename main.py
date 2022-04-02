@@ -7,6 +7,8 @@ import json
 import numpy as np
 import base64
 import qrcode
+from PIL import Image
+from pyzbar import pyzbar
 from datetime import datetime
 from src.lp_recognition import E2E
 
@@ -42,43 +44,52 @@ def create_ticket(license_plate):
     ticket_base64 = base64.b64encode(buffer)
     return ticket_base64.decode('utf8'), ticket_source
 def identified():
-    my_base64 = read_in()
-    img = data_uri_to_cv2_img(my_base64)
-    # read image
+    data = read_in()
+    image_64 = data['data']
+    isProcess = data['process']
+    if isProcess == 1:
+        pathTicket = image_64
+        img_convert = Image.open(pathTicket)
+        qr_output = pyzbar.decode(img_convert)
+        return '', qr_output, 1
+    else:
+        img = data_uri_to_cv2_img(image_64)
+        # read image
 
-    # # start
-    start = time.time()
+        # # start
+        start = time.time()
 
-    # # load model
-    model = E2E()
+        # # load model
+        model = E2E()
 
-    # # recognize license plate
-    image = model.predict(img)
-    license_plate = model.format()
-    #print(license_plate) #hien ra bien so xe
-    # # end
-    end = time.time()
-    return image, license_plate
-def main():
-    image, license_plate = identified()
-    #print('Model process on %.2f s' % (end - start))
-    retval, buffer = cv2.imencode('.jpg', image)
-    jpg_as_text = base64.b64encode(buffer)
+        # # recognize license plate
+        image = model.predict(img)
+        license_plate = model.format()
+        #print(license_plate) #hien ra bien so xe
+        # # end
+        end = time.time()
+        return image, license_plate, 0
+
     
-    ticket, url = create_ticket(license_plate)
-    infoLicensePlate = {
-        "base64": jpg_as_text.decode('utf8'),
-        "txt": license_plate,
-        "ticket": ticket,
-        "ticket_url_sys": url
-    }
-    print(json.dumps(infoLicensePlate))
+def main():
+    image, content, process = identified()
+    if process == 0:
+        #print('Model process on %.2f s' % (end - start))
+        retval, buffer = cv2.imencode('.jpg', image)
+        jpg_as_text = base64.b64encode(buffer)
+        
+        ticket, url = create_ticket(content)
+        infoLicensePlate = {
+            "base64": jpg_as_text.decode('utf8'),
+            "txt": content,
+            "ticket": ticket,
+            "ticket_url_sys": url
+        }
+        print(json.dumps(infoLicensePlate))
+    else:
+        ticket_info = content[0].data
+        print(json.dumps(str(ticket_info)))
     # show image
-    # cv2.imshow('License Plate', image)
-    # if cv2.waitKey(0) & 0xFF == ord('q'):
-    #     exit(0)
-    # cv2.destroyAllWindows()
-
 # Start process
 if __name__ == '__main__':
     main()

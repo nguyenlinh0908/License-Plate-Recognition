@@ -2,6 +2,9 @@ const electron = require("electron");
 const { ipcRenderer } = electron;
 $(document).ready((e) => {
   // e.preventDefault();
+  callListTickets();
+});
+function callListTickets() {
   ipcRenderer.on("tickets_list", (e, result) => {
     let ticket_table = $("#ticket_table>tbody");
     let tickets = result;
@@ -33,13 +36,14 @@ $(document).ready((e) => {
     }
     ticket_table.html(format);
   });
-});
+}
 $("#licensePlateForm").submit((e) => {
   e.preventDefault();
   const myImage = $("#licensePlateInput").prop("files");
   const { name, size, path } = myImage[0];
   ipcRenderer.send("image:submit", path);
   ipcRenderer.on("image:result", (e, info) => {
+    callListTickets();
     const { base64, txt, ticket, url, status } = info;
     $("#licensePlate_identified").attr(
       "src",
@@ -47,7 +51,6 @@ $("#licensePlateForm").submit((e) => {
     );
     $("#licensePlateText").html(txt);
     $("#ticketImage").attr("src", "data:image/jpeg;base64," + ticket);
-    console.log(status);
     if (status == 0) {
       $("#warning_ticket").show();
     }
@@ -58,5 +61,13 @@ $("#qrForm").submit((e) => {
   const myQr = $("#qrinput").prop("files");
   const { name, size, path } = myQr[0];
   ipcRenderer.send("qr:submit", path);
-  ipcRenderer.on("qr:result", (e, info) => {});
+  ipcRenderer.on("qr:result", (e, info) => {
+    let ticketResult = info;
+    ticketResult = ticketResult.split("'");
+    ticketResult = JSON.parse(ticketResult[1]);
+    let licensePlateText = $("#licensePlateTextTicket");
+    let timeTextTicket = $("#timeTextTicket");
+    licensePlateText.text(ticketResult["license_plate"]);
+    timeTextTicket.text(ticketResult["time"]);
+  });
 });
