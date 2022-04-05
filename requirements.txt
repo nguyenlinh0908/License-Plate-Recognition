@@ -4,3 +4,7 @@ tensorflow
 imutils==0.5.4
 scikit-image==0.18.1
 scikit-learn==0.24.1
+
+qrcode
+pyzbar
+
