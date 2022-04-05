@@ -158,16 +158,40 @@
               <div class="col-8">
                 <div class="row p-3">
                   <div class="col">
-                    <h3 class="text-center">Information</h3>
-                    <label for="licensePlateText">License Plate:</label>
-                    <h4
-                      id="licensePlateTextTicket"
-                      class="text-center text-uppercaseclear"
-                    ></h4>
-                    <label for="timeTextTicket">Time</label>
-                    <h5 class="text-center" id="timeTextTicket"></h5>
+                    <div
+                      style="border: 2px solid red"
+                      class="px-3"
+                      id="ticket-status_box"
+                    >
+                      <h3 class="text-center">Information</h3>
+                      <label for="licensePlateText">License Plate:</label>
+                      <h4
+                        id="licensePlateTextTicket"
+                        class="text-center text-uppercaseclear"
+                      ></h4>
+                      <label for="timeTextTicket">Time</label>
+                      <h5 class="text-center" id="timeTextTicket"></h5>
+                      <p
+                        class="text-center text-danger"
+                        id="ticket-status_text"
+                      ></p>
+                    </div>
                   </div>
-                  <div class="col-2"></div>
+                </div>
+                <div class="row">
+                  <div class="col-10">
+                    <p id="text-notification" class="text-center text-success"></p>
+                  </div>
+                  <div class="col-2">
+                    <button
+                      id="vehicle_handing"
+                      class="btn btn-success"
+                      disabled
+                      data-id=""
+                    >
+                      Giao xe
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -177,7 +201,6 @@
                   <thead class="thead-dark">
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Qr</th>
                       <th scope="col">License plate</th>
                       <th scope="col">Date</th>
                       <th scope="col">Status</th>
