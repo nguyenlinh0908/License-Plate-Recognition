@@ -20,6 +20,7 @@
   "dependencies": {
     "bignumber.js": "^9.0.2",
     "electron": "^16.0.5",
+    "electron-alert": "^0.1.20",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",
     "mysql": "^2.18.1",

@@ -25,20 +25,31 @@ function callListTickets(records) {
 </svg>`;
       }
       format += ` <tr>
-                      <th scope="row">${++index}</th>                   
+                      <th class="text-center" scope="row">${++index}</th>                   
                       <td>${ticket["sBienSo"]}</td>
-                      <td>${ticket["sThoiGian"]}</td>
-                      <td>${status}
+                      <td class="text-center">${ticket["sThoiGian"]}</td>
+                      <td class="text-center">${status}
                     </td>
                     </tr>`;
     });
   }
   ticket_table.html(format);
 }
-$("#licensePlateForm").submit((e) => {
+$("#btncheck").on("click", (e) => {
   e.preventDefault();
   const myImage = $("#licensePlateInput").prop("files");
   const { name, size, path } = myImage[0];
+
+  const d = new Date();
+  let time = d.getTime();
+  let year = d.getFullYear();
+  let month = d.getMonth() + 1;
+  month < 10 ? (month = "0" + month) : (month = month);
+  let day = d.getDate();
+  day < 10 ? (day = "0" + day) : (day = day);
+  var timenow = d.getHours() + ":" + (d.getMinutes()< 10 ? "0" + d.getMinutes() : d.getMinutes()) ;
+  let timing = `${timenow}, ${day}/${month}/${year}`;
+
   ipcRenderer.send("image:submit", path);
   ipcRenderer.on("image:result", (e, info) => {
     const { base64, txt } = info;
@@ -52,14 +63,32 @@ $("#licensePlateForm").submit((e) => {
         .addClass("text-success");
       $("#licensePlateText").html(txt);
       $("#inputLicensePlate").val(txt);
+      $("#thoigianvao").text(timing);
     } else {
       $("#licensePlateText").html(`Nhận diện không thành công`);
       $("#licensePlateText")
         .removeClass("text-success")
         .addClass("text-danger");
-      $("#inputLicensePlate").css("display", "block");
+      // $("#inputLicensePlate").css("display", "block");
     }
   });
+});
+$("#show-input-bienso").on("click", function() {
+  if($(this).val() == "hieninput") {
+    $("#licensePlateText").attr("hidden",true);
+    $("#input-nhaptay").attr("hidden",false);
+    $(this).val("hideinput");
+    $(this).text("Nhập tự động");
+    $(this).css("background-color","#28a745");
+    $(this).css("border-color","#28a745");
+  } else {
+    $("#licensePlateText").attr("hidden", false);
+    $("#input-nhaptay").attr("hidden",true);
+    $(this).val("hieninput");
+    $(this).text("Nhập biển số");
+    $(this).css("background-color","grey");
+    $(this).css("border-color","grey");
+  }
 });
 $("#qrForm").submit((e) => {
   e.preventDefault();
@@ -74,15 +103,17 @@ $("#qrForm").submit((e) => {
     isTicketValid(idTicket);
   });
 });
-$("#renderTicket").on("click", (e) => {
+$("#renderTicket").on("click", function(e) {
   e.preventDefault();
   let licensePlate = $("#inputLicensePlate").val();
+  if (licensePlate == "default") {
+    licensePlate = $("#input-nhaptay").val();
+  }
   let typeTicket = $("#typeTickets").val();
   isVehicle(licensePlate, typeTicket);
 });
 function isVehicle(licensePlate, typeTicket) {
   let sql = `SELECT * FROM tbl_bienso WHERE tbl_bienso.sBienSo = "${licensePlate}"`;
-  console.log(sql);
   connection.query(sql, function (err, res, fields) {
     let records = res;
     if (records.length != 0) {
@@ -99,7 +130,6 @@ function saveVehicle(licensePlate, typeTicket) {
   connection.query(sql, function (err, res, fields) {
     let result = res;
     if (result["affectedRows"] > 0) {
-      console.log("save vehicle success");
       saveTicket(id, typeTicket);
     }
   });
@@ -107,19 +137,18 @@ function saveVehicle(licensePlate, typeTicket) {
 function saveTicket(licensePlate, typeTicket) {
   let id = Math.floor(Math.random() * 9999);
   const d = new Date();
-  let time = d.getTime();
-  let year = d.getFullYear();
-  let month = d.getMonth() + 1;
-  month < 10 ? (month = "0" + month) : (month = month);
-  let day = d.getDate();
-  day < 10 ? (day = "0" + day) : (day = day);
-  let timing = `${day}/${month}/${year}`;
-  console.log(timing);
-  let sql = `INSERT INTO tbl_vexe (PK_iMaVe, sQr, sThoiGian, bTrangThai, FK_iLoaiVe, FK_iMaBien) VALUES (${id}, "./tickets/${id}.png", "${timing}", 0, ${typeTicket}, ${licensePlate})`;
+  // let time = d.getTime();
+  // let year = d.getFullYear();
+  // let month = d.getMonth() + 1;
+  // month < 10 ? (month = "0" + month) : (month = month);
+  // let day = d.getDate();
+  // day < 10 ? (day = "0" + day) : (day = day);
+  // let timing = `${day}/${month}/${year}`;
+  var timein = $("#thoigianvao").text();
+  let sql = `INSERT INTO tbl_vexe (PK_iMaVe, sQr, sThoiGian, bTrangThai, FK_iLoaiVe, FK_iMaBien) VALUES (${id}, "./tickets/${id}.png", "${timein}", 0, ${typeTicket}, ${licensePlate})`;
   connection.query(sql, function (err, res, fields) {
     let result = res;
     if (result["affectedRows"] > 0) {
-      console.log("save ticket success");
       renderQr(id);
     }
   });
@@ -145,9 +174,8 @@ function isTicketValid(condition) {
   connection.query($sql, function (err, res, fields) {
     let records = res;
     if (records.length > 0) {
-      console.log(records);
       $("#ticket-status_box").css("border-color", "green");
-      $("#ticket-status_text").text("Ticket valid");
+      $("#ticket-status_text").text("Vé hợp lệ");
       $("#ticket-status_text")
         .addClass("text-success")
         .removeClass("text-danger");
@@ -163,7 +191,7 @@ function isTicketValid(condition) {
       $("#ticket-status_text")
         .addClass("text-danger")
         .removeClass("text-success");
-      $("#ticket-status_text").text("Ticket invalid");
+      $("#ticket-status_text").text("Vé không hợp lệ");
     }
   });
 }

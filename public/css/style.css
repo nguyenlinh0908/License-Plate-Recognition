@@ -1,10 +1,47 @@
 #ticketImage {
-    width: 200px !important;
-    height: 200px;
+    width: 150px !important;
+    height: 150px;
+    margin-left: 120px;
 }
 
 .image_box {
     width: 200px !important;
-    height: 200px
-;
+    height: 200px;
+}
+
+.btn-tab1 {
+    width: 400px !important;
+}
+
+#licensePlateText {
+    border: 1px solid #28a745!important;
+}
+
+#show-input-bienso {
+    background-color: grey;
+    color: white;
+}
+
+#style-vegui {
+    border: 1px solid rgb(173, 173, 173);
+    padding: 20px;
+}
+
+#input-nhaptay {
+    border: 1px solid #28a745!important;
+    height: 24px;
+}
+
+#input-nhaptay:focus {
+    outline: none;
+    border: 2px solid #1f8838 !important;
+}
+
+#ticket-status_box {
+    border: 1px solid grey;
+    margin-top: 55px;
+}
+
+#licensePlateTextTicket {
+    border: 1px solid #28a745!important;
 }

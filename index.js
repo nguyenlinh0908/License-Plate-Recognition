@@ -10,7 +10,10 @@ app.on("ready", () => {
       nodeIntegration: true,
       contextIsolation: false,
     },
+    icon: __dirname + '/public/logo.png',
   });
+  mainWindow.maximize();
+  mainWindow.setTitle("Hệ thống quản lý gửi trả xe");
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 });
 // Menu.setApplicationMenu(false);

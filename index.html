@@ -27,7 +27,7 @@
                 role="tab"
                 aria-controls="home"
                 aria-selected="true"
-                >Scan License Plate</a
+                >Gửi xe</a
               >
             </li>
             <li class="nav-item">
@@ -39,7 +39,7 @@
                 role="tab"
                 aria-controls="contact"
                 aria-selected="false"
-                >Manager Ticket</a
+                >Trả xe</a
               >
             </li>
           </ul>
@@ -51,90 +51,110 @@
             role="tabpanel"
             aria-labelledby="home-tab"
           >
-            <div id="licensePlateBox" class="row p-3 main_border module">
-              <div class="col-md-5">
+            <div id="licensePlateBox" class="p-3 col-md-12 main_border module">
                 <div class="row">
-                  <div
-                    class="col-5 align-self-center licensePlate_container"
-                    id="licensePlate_box"
-                  >
-                    <img
-                      class="w-100 image_box"
-                      id="licensePlate_origin"
-                      src=""
-                      alt="license plate origin"
-                      style="background-color: gray"
-                    />
-                  </div>
-                  <div class="col-2"></div>
-                  <div class="col-5 align-self-center licensePlate_container">
-                    <img
-                      class="w-100 image_box"
-                      id="licensePlate_identified"
-                      src=""
-                      alt="license plate identified"
-                      style="background-color: gray"
-                    />
-                  </div>
+                    <div class="col-md-5">
+                        <div class="row">
+                          <div
+                            class="col-5 align-self-center licensePlate_container"
+                            id="licensePlate_box">
+                            <h4 class="text-center">Chọn biển số</h4>
+                            <div class="col-md-12 text-center">
+                                <img
+                                class="w-100 mt-3 image_box"
+                                id="licensePlate_origin"
+                                src=""
+                                alt="Chọn biển số xe gửi"
+                                style="background-color: gray"/>
+                            </div>
+
+                            
+                          </div>
+                          <div class="col-2"></div>
+                          <div class="col-5 align-self-center licensePlate_container">
+                            <h4 class="text-center">Biển số xe gửi</h4>
+                            <div class="col-md-12 text-center">
+                                <img
+                                class="w-100 mt-3 image_box"
+                                id="licensePlate_identified"
+                                src=""
+                                alt="Thông tin biển sô xe gửi"
+                                style="background-color: gray"
+                                />
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 pl-5">
+                        <div id="style-vegui">
+                            <div class="row justify-content-center">
+                                <h3 class="text-center">Vé gửi xe</h3>
+                            </div>
+                            <div class="row mt-4">
+                              <div class="col-md-8"> 
+                                <div class="row col-md-12 form-group">
+                                    <label for="licensePlateText" class="col-md-3">Biển số xe:</label>
+                                    <h4
+                                    id="licensePlateText"
+                                    class="text-center col-md-9 text-uppercaseclear"
+                                    ></h4>
+                                    <input
+                                    type="text"
+                                    class="col-md-9"
+                                    id="input-nhaptay"
+                                    placeholder=""
+                                    value=""
+                                    hidden/>
+                                    <input
+                                    type="text"
+                                    class="form-control"
+                                    id="inputLicensePlate"
+                                    placeholder="Biển số"
+                                    value="default"
+                                    hidden/>
+                                </div>
+                                <div class="row col-md-12 form-group">
+                                    <label for="typeTickets" class="col-md-3">Loại vé:</label>
+                                    <select id="typeTickets" class="form-control col-md-5"></select>
+                                    <button id="show-input-bienso" value="hieninput" class="col-md-3 ml-5 btn btn-default" type="button">Nhập biển số</button>
+                                </div>
+
+                                <div class="row col-md-12 form-group">
+                                    <label for="typeTickets" class="col-md-3">Thời gian gửi:</label>
+                                    <h5 class="text-center col-md-9" id="thoigianvao"></h5>
+                                </div>
+                                
+                              </div>
+                              <div class="col-md-4">
+                                <img 
+                                  src=""
+                                  id="ticketImage"
+                                  class="w-100 mb-3"
+                                  alt="Mã QR biển số"
+                                  style="background-color: gray"
+                                />
+                              </div>
+                            </div>
+                        </div>
+                      </div>
                 </div>
-                <div class="row pt-3">
-                  <div class="col-12">
-                    <form id="licensePlateForm" action="#">
-                      <input
-                        id="licensePlateInput"
-                        type="file"
-                        accept="image/*"
-                        style="display: none"
-                        onchange="licensePlateOrigin(event)"
-                      />
-                      <button class="btn btn-primary w-100" type="submit">
-                        Identification
-                      </button>
-                    </form>
-                  </div>
+                <div class="row">
+                    <div class="col-md-5 text-center">
+                        <input
+                            id="licensePlateInput"
+                            type="file"
+                            accept="image/*"
+                            style="display: none"
+                            onchange="licensePlateOrigin(event)"
+                            />
+                        <button class="btn btn-primary btn-tab1 w-100" id="btncheck" type="button">
+                        Kiểm tra
+                        </button>
+                    </div>
+                    <div class="col-md-7 text-center">
+                        <button id="renderTicket" class="btn btn-info btn-tab1 w-100">Xác nhận gửi xe</button>
+                    </div>
                 </div>
-              </div>
-              <div class="col-5">
-                <div class="row mt-3">
-                  <div class="col">
-                    <h3 class="text-center">Vé gửi xe</h3>
-                    <label for="licensePlateText">Biển số xe:</label>
-                    <h4
-                      id="licensePlateText"
-                      class="text-center text-uppercaseclear"
-                    ></h4>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="inputLicensePlate"
-                      style="display: none"
-                      placeholder="Biển số"
-                      value="default"
-                    />
-                  </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col">
-                    <label for="typeTickets">Loại vé</label>
-                    <select id="typeTickets" class="form-control"></select>
-                  </div>
-                  <div class="col">
-                    <label for="ticketImage">Vé xe</label> <br />
-                    <img
-                      src=""
-                      id="ticketImage"
-                      class="w-100"
-                      alt=""
-                      style="background-color: gray"
-                    />
-                  </div>
-                </div>
-                <div class="row mt-3">
-                  <div class="col">
-                    <button id="renderTicket" class="btn btn-info w-100">Ticket</button>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div
@@ -143,86 +163,95 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <div id="QrBox" class="row m-3 main_border module">
-              <div class="col-4">
-                <div
-                  id="qr_box"
-                  class="text-center"
-                  style="width: 100%; min-height: 20vh; background-color: gray"
-                >
-                  <img
-                    class="w-50 image_box"
-                    id="qr_origin"
-                    src=""
-                    alt="Qr image"
-                    style="background-color: gray"
-                  />
-                </div>
-                <form id="qrForm" action="#">
-                  <input
-                    id="qrinput"
-                    type="file"
-                    accept="image/*"
-                    style="display: none"
-                    onchange="qrOrigin(event)"
-                  />
-                  <button class="btn btn-primary w-100 mt-3" type="submit">
-                    Identification
-                  </button>
-                </form>
-              </div>
-              <div class="col-8">
-                <div class="row p-3">
-                  <div class="col">
-                    <div
-                      style="border: 2px solid red"
-                      class="px-3"
-                      id="ticket-status_box"
-                    >
-                      <h3 class="text-center">Information</h3>
-                      <label for="licensePlateTextTicket">License Plate:</label>
-                      <h4
-                        id="licensePlateTextTicket"
-                        class="text-center text-uppercaseclear"
-                      ></h4>
-                      <label for="timeTextTicket">Time</label>
-                      <h5 class="text-center" id="timeTextTicket"></h5>
-                      <p
-                        class="text-center text-danger"
-                        id="ticket-status_text"
-                      ></p>
-                    </div>
-                  </div>
+            <div id="QrBox" class="m-3 main_border module">
+                <div class="row">
+                    <div class="col-4">
+                        <h4 class="text-center mt-2 mb-4">Chọn mã QR biển số</h4>
+                        <div
+                          id="qr_box"
+                          class="text-center"
+                          style="width: 100%; min-height: 20vh; background-color: gray"
+                        >
+                          <img
+                            class="w-50 image_box"
+                            id="qr_origin"
+                            src=""
+                            alt="Qr image"
+                            style="background-color: gray"
+                          />
+                        </div>
+                          <input
+                            id="qrinput"
+                            type="file"
+                            accept="image/*"
+                            style="display: none"
+                            onchange="qrOrigin(event)"
+                          />
+                      </div>
+                      <div class="col-8">
+                        <div class="row p-3">
+                          <div class="col-md-12">
+                            <div
+                              class="px-3 text-center"
+                              id="ticket-status_box">
+                              <h4 style="margin-bottom: 50px;" class="text-center mt-3">Thông tin vé gửi</h4>
+                              <div class="row justify-content-center mb-2">
+                                <label for="licensePlateTextTicket" class="col-md-2">Biển số xe:</label>
+                                <h4
+                                  id="licensePlateTextTicket"
+                                  class="text-center text-uppercaseclear col-md-5"
+                                ></h4>
+                              </div>
+                              <div class="row justify-content-center mb-2">
+                                <label for="timeTextTicket" class="col-md-2">Thời gian gửi:</label>
+                                <h5 class="text-center col-md-5" id="timeTextTicket"></h5>
+                              </div>
+                              <div class="row justify-content-center mb-2">
+                                <label for="timeTextTicket" class="col-md-2">Trạng thái:</label>
+                                <p
+                                    class="text-center text-danger col-md-5"
+                                    id="ticket-status_text"
+                                ></p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                 </div>
                 <div class="row">
-                  <div class="col-10">
-                    <p
-                      id="text-notification"
-                      class="text-center text-success"
-                    ></p>
-                  </div>
-                  <div class="col-2">
-                    <button
-                      id="vehicle_handing"
-                      class="btn btn-success"
-                      disabled
-                      data-id=""
-                    >
-                      Giao xe
-                    </button>
-                  </div>
+                    <div class="col-4">
+                        <div class="text-center">
+                            <form id="qrForm" action="#">
+                                <button class="btn btn-primary w-100 mt-3 btn-tab1" type="submit">
+                                    Kiểm tra
+                                </button>
+                            </form>
+                          </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="text-center">
+                            <button
+                                id="vehicle_handing"
+                                class="btn btn-success btn-tab1 mt-3"
+                                disabled
+                                data-id="">
+                                Giao xe
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
+            <hr />
             <div id="managerBox" class="row m-3 main_border module">
-              <div class="col">
-                <table class="table" id="ticket_table">
-                  <thead class="thead-dark">
+              <div class="col-md-12">
+                <h3 class="text-center mb-4">Danh Sách Xe Gửi</h3>
+                <table class="table table-bordered table-hover" id="ticket_table">
+                  <thead class="">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">License plate</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Status</th>
+                      <th class="text-center" scope="col">STT</th>
+                      <th class="text-center" scope="col">Biển số</th>
+                      <th class="text-center" scope="col">Thời gian gửi</th>
+                      <th class="text-center" scope="col">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody></tbody>
