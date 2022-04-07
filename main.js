@@ -3,6 +3,7 @@ const { ipcRenderer } = electron;
 const fs = require("fs");
 $(document).ready((e) => {
   vehicleHanding();
+  typeTickets();
   listTickets();
 });
 function callListTickets(records) {
@@ -12,7 +13,7 @@ function callListTickets(records) {
   if (tickets.length > 0) {
     tickets.forEach((ticket, index) => {
       let status = "";
-      if (ticket["trangthai"] == 0) {
+      if (ticket["bTrangThai"] == 0) {
         status = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle text-danger" viewBox="0 0 16 16">
   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
   <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
@@ -25,8 +26,8 @@ function callListTickets(records) {
       }
       format += ` <tr>
                       <th scope="row">${++index}</th>                   
-                      <td>${ticket["ma_bien"]}</td>
-                      <td>${ticket["time"]}</td>
+                      <td>${ticket["sBienSo"]}</td>
+                      <td>${ticket["sThoiGian"]}</td>
                       <td>${status}
                     </td>
                     </tr>`;
@@ -40,17 +41,23 @@ $("#licensePlateForm").submit((e) => {
   const { name, size, path } = myImage[0];
   ipcRenderer.send("image:submit", path);
   ipcRenderer.on("image:result", (e, info) => {
-    console.log(info);
-    callListTickets();
-    const { base64, txt, ticket, url, status } = info;
+    const { base64, txt } = info;
     $("#licensePlate_identified").attr(
       "src",
       "data:image/jpeg;base64," + base64
     );
-    $("#licensePlateText").html(txt);
-    $("#ticketImage").attr("src", "data:image/jpeg;base64," + ticket);
-    if (status == 0) {
-      $("#warning_ticket").show();
+    if (txt != "") {
+      $("#licensePlateText")
+        .removeClass("text-danger")
+        .addClass("text-success");
+      $("#licensePlateText").html(txt);
+      $("#inputLicensePlate").val(txt);
+    } else {
+      $("#licensePlateText").html(`Nhận diện không thành công`);
+      $("#licensePlateText")
+        .removeClass("text-success")
+        .addClass("text-danger");
+      $("#inputLicensePlate").css("display", "block");
     }
   });
 });
@@ -63,36 +70,95 @@ $("#qrForm").submit((e) => {
     let ticketResult = info;
     ticketResult = ticketResult.split("'");
     ticketResult = JSON.parse(ticketResult[1]);
-    let licensePlateText = $("#licensePlateTextTicket");
-    let timeTextTicket = $("#timeTextTicket");
-    let license_plate = ticketResult["license_plate"];
-    let time = ticketResult["time"];
-    licensePlateText.text(license_plate);
-    timeTextTicket.text(time);
-    isTicketValid({ license_plate: license_plate, time: time });
+    let idTicket = ticketResult["id"];
+    isTicketValid(idTicket);
   });
 });
-
+$("#renderTicket").on("click", (e) => {
+  e.preventDefault();
+  let licensePlate = $("#inputLicensePlate").val();
+  let typeTicket = $("#typeTickets").val();
+  isVehicle(licensePlate, typeTicket);
+});
+function isVehicle(licensePlate, typeTicket) {
+  let sql = `SELECT * FROM tbl_bienso WHERE tbl_bienso.sBienSo = "${licensePlate}"`;
+  console.log(sql);
+  connection.query(sql, function (err, res, fields) {
+    let records = res;
+    if (records.length != 0) {
+      let id = records[0]["PK_iMaBien"];
+      saveTicket(id, typeTicket);
+    } else {
+      saveVehicle(licensePlate, typeTicket);
+    }
+  });
+}
+function saveVehicle(licensePlate, typeTicket) {
+  let id = Math.floor(Math.random() * 9999);
+  let sql = `INSERT INTO tbl_bienso (PK_iMaBien, sBienSo) VALUES(${id}, "${licensePlate}")`;
+  connection.query(sql, function (err, res, fields) {
+    let result = res;
+    if (result["affectedRows"] > 0) {
+      console.log("save vehicle success");
+      saveTicket(id, typeTicket);
+    }
+  });
+}
+function saveTicket(licensePlate, typeTicket) {
+  let id = Math.floor(Math.random() * 9999);
+  const d = new Date();
+  let time = d.getTime();
+  let year = d.getFullYear();
+  let month = d.getMonth() + 1;
+  month < 10 ? (month = "0" + month) : (month = month);
+  let day = d.getDate();
+  day < 10 ? (day = "0" + day) : (day = day);
+  let timing = `${day}/${month}/${year}`;
+  console.log(timing);
+  let sql = `INSERT INTO tbl_vexe (PK_iMaVe, sQr, sThoiGian, bTrangThai, FK_iLoaiVe, FK_iMaBien) VALUES (${id}, "./tickets/${id}.png", "${timing}", 0, ${typeTicket}, ${licensePlate})`;
+  connection.query(sql, function (err, res, fields) {
+    let result = res;
+    if (result["affectedRows"] > 0) {
+      console.log("save ticket success");
+      renderQr(id);
+    }
+  });
+}
+function renderQr(id) {
+  ipcRenderer.send("ticket:submit", id);
+  ipcRenderer.on("ticket:result", (e, info) => {
+    let result = info;
+    const { ticket, ticket_url_sys } = result;
+    $("#ticketImage").attr("src", "data:image/jpeg;base64," + ticket);
+  });
+}
 function listTickets() {
-  $sql = `SELECT * FROM tbl_bienso`;
+  $sql = `SELECT * FROM tbl_vexe INNER JOIN tbl_bienso ON tbl_bienso.PK_iMaBien = tbl_vexe.FK_iMaBien INNER JOIN tbl_loaive ON tbl_loaive.PK_iLoaiVe = tbl_vexe.FK_iLoaiVe`;
   connection.query($sql, function (err, res, fields) {
     let records = res;
     callListTickets(records);
   });
 }
 function isTicketValid(condition) {
-  let { license_plate, time } = condition;
-  $sql = `SELECT * FROM tbl_bienso WHERE tbl_bienso.ma_bien = '${license_plate}' AND tbl_bienso.time = '${time}' AND tbl_bienso.trangthai = 0`;
+  let id = condition;
+  $sql = `SELECT * FROM tbl_vexe INNER JOIN tbl_bienso ON tbl_bienso.PK_iMaBien = tbl_vexe.FK_iMaBien WHERE tbl_vexe.PK_iMaVe = '${id}' AND tbl_vexe.bTrangThai = 0`;
   connection.query($sql, function (err, res, fields) {
     let records = res;
     if (records.length > 0) {
+      console.log(records);
       $("#ticket-status_box").css("border-color", "green");
       $("#ticket-status_text").text("Ticket valid");
       $("#ticket-status_text")
         .addClass("text-success")
         .removeClass("text-danger");
-      $("#vehicle_handing").attr("data-id", records[0]["id"]);
+      $("#vehicle_handing").attr("data-id", records[0]["PK_iMaVe"]);
       $("#vehicle_handing").prop("disabled", false);
+      let licensePlateText = $("#licensePlateTextTicket");
+      let timeTextTicket = $("#timeTextTicket");
+      let license_plate = records[0]["sBienSo"];
+      let time = records[0]["sThoiGian"];
+      licensePlateText.text(license_plate);
+      timeTextTicket.text(time);
     } else {
       $("#ticket-status_text")
         .addClass("text-danger")
@@ -105,7 +171,7 @@ function vehicleHanding() {
   const btnVehicleHanding = $("#vehicle_handing");
   btnVehicleHanding.on("click", (e) => {
     const id = btnVehicleHanding.data("id");
-    $sql = `UPDATE tbl_bienso SET tbl_bienso.trangthai = 1 WHERE tbl_bienso.id = ${id}`;
+    $sql = `UPDATE tbl_vexe SET tbl_vexe.bTrangThai = 1 WHERE tbl_vexe.PK_iMaVe = ${id}`;
     connection.query($sql, function (err, res, fields) {
       let affectedRows = res["affectedRows"];
       if (affectedRows > 0) {
@@ -136,4 +202,20 @@ function notificationChangeStatus(status) {
   setInterval(() => {
     notificationText.text("");
   }, 3000);
+}
+function typeTickets() {
+  $sql = `SELECT * FROM tbl_loaive`;
+  connection.query($sql, function (err, res, fields) {
+    let records = res;
+    let selectTypeTickets = $("#typeTickets");
+    let html = "";
+    records.forEach((record, index) => {
+      if (index == 0) {
+        html += `<option selected value="${record["PK_iLoaiVe"]}">${record["sLoaiVe"]} - ${record["fGia"]}</option>`;
+      } else {
+        html += `<option value="${record["PK_iLoaiVe"]}">${record["sLoaiVe"]} - ${record["fGia"]}</option>`;
+      }
+    });
+    selectTypeTickets.html(html);
+  });
 }

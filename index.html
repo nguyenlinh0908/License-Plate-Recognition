@@ -95,7 +95,7 @@
                 </div>
               </div>
               <div class="col-5">
-                <div class="row p-3">
+                <div class="row mt-3">
                   <div class="col">
                     <h3 class="text-center">Vé gửi xe</h3>
                     <label for="licensePlateText">Biển số xe:</label>
@@ -103,7 +103,23 @@
                       id="licensePlateText"
                       class="text-center text-uppercaseclear"
                     ></h4>
-                    <label for="ticketImage">Ticket</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="inputLicensePlate"
+                      style="display: none"
+                      placeholder="Biển số"
+                      value="default"
+                    />
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col">
+                    <label for="typeTickets">Loại vé</label>
+                    <select id="typeTickets" class="form-control"></select>
+                  </div>
+                  <div class="col">
+                    <label for="ticketImage">Vé xe</label> <br />
                     <img
                       src=""
                       id="ticketImage"
@@ -112,10 +128,10 @@
                       style="background-color: gray"
                     />
                   </div>
-                  <div class="col-2">
-                    <p id="warning_ticket" class="text-danger">
-                      vehicle had ticket !!!
-                    </p>
+                </div>
+                <div class="row mt-3">
+                  <div class="col">
+                    <button id="renderTicket" class="btn btn-info w-100">Ticket</button>
                   </div>
                 </div>
               </div>
@@ -164,7 +180,7 @@
                       id="ticket-status_box"
                     >
                       <h3 class="text-center">Information</h3>
-                      <label for="licensePlateText">License Plate:</label>
+                      <label for="licensePlateTextTicket">License Plate:</label>
                       <h4
                         id="licensePlateTextTicket"
                         class="text-center text-uppercaseclear"
@@ -180,7 +196,10 @@
                 </div>
                 <div class="row">
                   <div class="col-10">
-                    <p id="text-notification" class="text-center text-success"></p>
+                    <p
+                      id="text-notification"
+                      class="text-center text-success"
+                    ></p>
                   </div>
                   <div class="col-2">
                     <button

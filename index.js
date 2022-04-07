@@ -12,7 +12,6 @@ app.on("ready", () => {
     },
   });
   mainWindow.loadURL(`file://${__dirname}/index.html`);
-  showListTickets();
 });
 // Menu.setApplicationMenu(false);
 ipcMain.on("image:submit", (e, path) => {
@@ -22,10 +21,13 @@ ipcMain.on("image:submit", (e, path) => {
 ipcMain.on("qr:submit", (e, myPath) => {
   execWithPythonQrCode(myPath);
 });
+ipcMain.on("ticket:submit", (e, idTicket) => {
+  execWithPythonTicket(idTicket);
+});
 function execWithPythonQrCode(pathTicket) {
   let myPyShell = new PythonShell("main.py");
   // sends a message to the Python script via stdin
-  myPyShell.send(JSON.stringify({ data: pathTicket, process: 1 })); //ticket recognition
+  myPyShell.send(JSON.stringify({ data: pathTicket, process: 2 })); //ticket recognition
 
   myPyShell.on("message", function (message) {
     const dataResult = JSON.parse(message);
@@ -47,44 +49,6 @@ function base64_encode(file) {
   // convert binary data to base64 encoded string
   return new Buffer(bitmap).toString("base64");
 }
-function storageTicket(path, data) {
-  const { base64, txt, ticket, ticket_url_sys } = data;
-  let rawFile = fs.readFileSync(path);
-  let tickets = JSON.parse(rawFile);
-  const d = new Date();
-  let time = d.getTime();
-  let year = d.getFullYear();
-  let month = d.getMonth() + 1;
-  month < 10 ? (month = "0" + month) : (month = month);
-  let day = d.getDate();
-  day < 10 ? (day = "0" + day) : (day = day);
-  if (tickets.length > 0 && _.find(tickets, { license_plate: txt })) {
-    // const info = _.find(tickets, { license_plate: txt });
-    // if (info["status"] == "false") {
-    //   fs.unlink(ticket_url_sys);
-    // }
-  } else {
-    const ticket = {
-      id: time.toString(),
-      license_plate: txt,
-      ticket: ticket_url_sys,
-      time: `${day}/${month}/${year}`,
-      status: false,
-    };
-    tickets.push(ticket);
-    let ticketsJson = JSON.stringify(tickets);
-    console.log(ticketsJson);
-    fs.writeFileSync(path, ticketsJson);
-  }
-}
-function showListTickets() {
-  let rawFile = fs.readFileSync("tickets.json");
-  let tickets = JSON.parse(rawFile);
-  mainWindow.webContents.on("did-finish-load", function () {
-    mainWindow.webContents.send("tickets_list", tickets);
-  });
-}
-
 function execWithPython(imageBase64) {
   let myPyShell = new PythonShell("main.py");
 
@@ -95,10 +59,31 @@ function execWithPython(imageBase64) {
 
   myPyShell.on("message", function (message) {
     const dataResult = JSON.parse(message);
-    const { base64, txt, ticket, url } = dataResult;
-    storageTicket("tickets.json", dataResult);
+    const { base64, txt } = dataResult;
     // received a message sent from the Python script (a simple "print" statement)
     mainWindow.webContents.send("image:result", dataResult);
+  });
+
+  // end the input stream and allow the process to exit
+  myPyShell.end(function (err, code, signal) {
+    if (err) throw err;
+    console.log("The exit code was: " + code);
+    console.log("The exit signal was: " + signal);
+    console.log("finished");
+  });
+}
+function execWithPythonTicket(idTicket) {
+  let myPyShell = new PythonShell("main.py");
+
+  // sends a message to the Python script via stdin
+  myPyShell.send(
+    JSON.stringify({ data: idTicket, process: 1 }) // process 0 is license plate recognition
+  );
+
+  myPyShell.on("message", function (message) {
+    const dataResult = JSON.parse(message);
+    // received a message sent from the Python script (a simple "print" statement)
+    mainWindow.webContents.send("ticket:result", dataResult);
   });
 
   // end the input stream and allow the process to exit
