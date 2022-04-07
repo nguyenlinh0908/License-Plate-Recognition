@@ -84,6 +84,7 @@ function showListTickets() {
     mainWindow.webContents.send("tickets_list", tickets);
   });
 }
+
 function execWithPython(imageBase64) {
   let myPyShell = new PythonShell("main.py");
 
