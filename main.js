@@ -47,7 +47,10 @@ $("#btncheck").on("click", (e) => {
   month < 10 ? (month = "0" + month) : (month = month);
   let day = d.getDate();
   day < 10 ? (day = "0" + day) : (day = day);
-  var timenow = d.getHours() + ":" + (d.getMinutes()< 10 ? "0" + d.getMinutes() : d.getMinutes()) ;
+  var timenow =
+    d.getHours() +
+    ":" +
+    (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes());
   let timing = `${timenow}, ${day}/${month}/${year}`;
 
   ipcRenderer.send("image:submit", path);
@@ -73,21 +76,21 @@ $("#btncheck").on("click", (e) => {
     }
   });
 });
-$("#show-input-bienso").on("click", function() {
-  if($(this).val() == "hieninput") {
-    $("#licensePlateText").attr("hidden",true);
-    $("#input-nhaptay").attr("hidden",false);
+$("#show-input-bienso").on("click", function () {
+  if ($(this).val() == "hieninput") {
+    $("#licensePlateText").attr("hidden", true);
+    $("#input-nhaptay").attr("hidden", false);
     $(this).val("hideinput");
     $(this).text("Nhập tự động");
-    $(this).css("background-color","#28a745");
-    $(this).css("border-color","#28a745");
+    $(this).css("background-color", "#28a745");
+    $(this).css("border-color", "#28a745");
   } else {
     $("#licensePlateText").attr("hidden", false);
-    $("#input-nhaptay").attr("hidden",true);
+    $("#input-nhaptay").attr("hidden", true);
     $(this).val("hieninput");
     $(this).text("Nhập biển số");
-    $(this).css("background-color","grey");
-    $(this).css("border-color","grey");
+    $(this).css("background-color", "grey");
+    $(this).css("border-color", "grey");
   }
 });
 $("#qrForm").submit((e) => {
@@ -103,7 +106,7 @@ $("#qrForm").submit((e) => {
     isTicketValid(idTicket);
   });
 });
-$("#renderTicket").on("click", function(e) {
+$("#renderTicket").on("click", function (e) {
   e.preventDefault();
   let licensePlate = $("#inputLicensePlate").val();
   if (licensePlate == "default") {
@@ -205,26 +208,28 @@ function vehicleHanding() {
       if (affectedRows > 0) {
         notificationChangeStatus(0);
       } else {
-        notificationChangeStatus(0);
+        notificationChangeStatus(1);
       }
       // removeTicket(res[0]["url_qr"]);
       listTickets();
     });
   });
 }
-// function removeTicket(path) {
-//   let filePath = path;
-//   fs.unlinkSync(filePath);
-// }
+function removeTicket(path) {
+  let filePath = path;
+  fs.unlinkSync(filePath);
+}
 function notificationChangeStatus(status) {
   let text = "";
   const notificationText = $("#text-notification");
   switch (status) {
     case 0:
-      text = "vehicle handing success";
+      notificationText.addClass("text-success").removeClass("text-danger");
+      text = "Giao xe thành công";
       break;
     default:
-      text = "vehicle handing fail";
+      notificationText.addClass("text-danger").removeClass("text-success");
+      text = "Giao xe thất bại";
   }
   notificationText.text(text);
   setInterval(() => {

@@ -228,7 +228,12 @@
                             </form>
                           </div>
                     </div>
-                    <div class="col-8">
+                    <div class="col-2">
+                      <div class="text-center">
+                        <p id="text-notification"></p>
+                      </div>
+                    </div>
+                    <div class="col-6">
                         <div class="text-center">
                             <button
                                 id="vehicle_handing"
@@ -282,6 +287,7 @@
 
       activeTag.addClass("electron_cyan");
       previousTag.removeClass("electron_cyan");
+      listTickets()
     });
   </script>
   <script>
